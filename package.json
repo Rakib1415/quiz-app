@@ -2,6 +2,10 @@
   "name": "quiz-app",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "12.16.1",
+    "npm":"6.13.4"
+  },
   "dependencies": {
     "@mdi/font": "^4.4.95",
     "classnames": "^2.2.6",
