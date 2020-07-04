@@ -69,7 +69,7 @@ class QuizSummary extends Component {
                     <section>
                         <ul>
                             <li>
-                                <Link to ="/">Play Again</Link>
+                                <Link to ="/correctAnswer">Check Answer</Link>
                             </li>
                         </ul>
                     </section>

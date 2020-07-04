@@ -1,3 +1,8 @@
+.container{
+    margin: 0 auto;
+    height: 200px;
+    position: relative;
+}
 .quiz-summary {
     font-family: $quicksand;
 
@@ -26,14 +31,26 @@
         max-width: 50%;
         padding: $sm $md $md $md;
     }
+    .stats h2{
+        padding-bottom: 60px;
+    }
 
     .stats h4, .stats h2 {
         text-align: center;
+        
+    }
+    .right{
+        position: absolute;
+        right : 100px;
+    }
+    .left{
+        position: absolute;
     }
 
     .stats .stat {
         color: $off-black;
         font-size: $normal;
+        // margin-bottom: 20px;
     }
 
     section ul {

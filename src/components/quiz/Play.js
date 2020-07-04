@@ -23,7 +23,13 @@ class Play extends Component {
             nextButtonDisabled: false,
             previousButtonDisabled: true,
             previousRandomNumbers: [],
-            time: {}
+            time: {},
+            disabledOptions: false, //Enable or disable Answer Options
+            optionA: false, //Radio button all initially not checked, so set to false initially
+            optionB: false,
+            optionC: false,
+            optionD: false,
+            userAnswer: []
         };
         this.interval = null;
     }
@@ -32,10 +38,12 @@ class Play extends Component {
         const { questions, currentQuestion, nextQuestion, previousQuestion } = this.state;
         this.displayQuestions(questions, currentQuestion, nextQuestion, previousQuestion);
         this.startTimer();
+        
     }
 
     componentWillUnmount () {
         clearInterval(this.interval);
+        
     }
 
     displayQuestions = (questions = this.state.questions, currentQuestion, nextQuestion, previousQuestion) => {
@@ -60,8 +68,9 @@ class Play extends Component {
         }     
     };
 
-    handleOptionClick = (e) => {
-        if (e.target.innerHTML.toLowerCase() === this.state.answer.toLowerCase()) {
+    handleOptionClick = (event) => {
+
+        if (event.target.value.toLowerCase() === this.state.answer.toLowerCase()) {
             this.correctTimeout = setTimeout(() => {
             }, 500);
             this.correctAnswer();
@@ -71,11 +80,69 @@ class Play extends Component {
             }, 500);
             this.wrongAnswer();
         }
+        if(event.target.id === "optionA") { 
+            this.setState({
+                optionA: event.target.checked,
+                optionB: !event.target.checked,
+                optionC: !event.target.checked,
+                optionD: !event.target.checked,
+                userAnswer: {
+                    option: event.target.value,
+                    id: this.state.currentQuestion.id
+                    
+                }
+            })    
+        }
+        else if(event.target.id ==="optionB") {
+            this.setState({
+                optionB: event.target.checked,
+                optionA: !event.target.checked,
+                optionC: !event.target.checked,
+                optionD: !event.target.checked,
+                userAnswer: {
+                    option: event.target.value,
+                    id: this.state.currentQuestion.id
+                    
+                }
+            })
+        }
+        else if(event.target.id ==="optionC") {
+            this.setState({
+                optionC: event.target.checked,
+                optionB: !event.target.checked,
+                optionA: !event.target.checked,
+                optionD: !event.target.checked,
+                userAnswer: {
+                    option: event.target.value,
+                    id: this.state.currentQuestion.id
+                }
+            })
+        }
+        else if(event.target.id ==="optionD") {
+            this.setState({
+                optionD: event.target.checked,
+                optionB: !event.target.checked,
+                optionC: !event.target.checked,
+                optionA: !event.target.checked,
+                userAnswer: {
+                    option: event.target.value,
+                    id: this.state.currentQuestion.id
+                    
+                }
+            })
+        }
+        
     }
+   
 
     handleNextButtonClick = () => {
         if (this.state.nextQuestion !== undefined) {
             this.setState(prevState => ({
+                disabledOptions: false, //Enable or disable Answer Options
+                optionA: false, //Radio button all initially not checked, so set to false initially
+                optionB: false,
+                optionC: false,
+                optionD: false,
                 currentQuestionIndex: prevState.currentQuestionIndex + 1
             }), () => {
                 this.displayQuestions(this.state.state, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
@@ -83,21 +150,55 @@ class Play extends Component {
         }
     };
 
-    handlePreviousButtonClick = () => {
-        if (this.state.previousQuestion !== undefined) {
-            this.setState(prevState => ({
-                currentQuestionIndex: prevState.currentQuestionIndex - 1
-            }), () => {
-                this.displayQuestions(this.state.state, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
-            });
-        }
-    };
-
-    handleQuitButtonClick = () => {
-        if (window.confirm('Are you sure you want to quit?')) {
-            this.props.history.push('/quizSummary');
-        }
-    };
+    // handlePreviousButtonClick = () => {
+    //     const questionItem = [this.state.previousQuestion];
+    //     console.log(questionItem);
+    //     console.log(this.state.userAnswer);
+    //     if (this.state.previousQuestion !== undefined) {
+    //         this.setState(prevState => ({
+    //             currentQuestionIndex: prevState.currentQuestionIndex - 1
+    //         }), () => {
+    //             this.displayQuestions(this.state.state, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
+    //         });
+    //     }
+    //     questionItem.map(question => {
+    //         if (question.optionA === this.state.userAnswer.option && question.id === this.state.userAnswer.id) {
+    //             return this.setState({
+    //                 optionA: !this.state.optionA,
+    //                 optionB: false,
+    //                 optionC: false,
+    //                 optionD: false
+                    
+                    
+    //             })
+    //         }
+    //         else if (question.optionB === this.state.userAnswer.option && question.id === this.state.userAnswer.id) {
+    //             return this.setState({
+    //                 optionB: !this.state.optionB,
+    //                 optionA: false,
+    //                 optionC: false,
+    //                 optionD: false
+                    
+    //             })
+    //         }
+    //         else if (question.optionC === this.state.userAnswer.option && question.id === this.state.userAnswer.id) {
+    //             return this.setState({
+    //                 optionC: !this.state.optionC,
+    //                 optionB: false,
+    //                 optionA: false,
+    //                 optionD: false
+    //             })
+    //         }
+    //         else if (question.optionD === this.state.userAnswer.option && question.id === this.state.userAnswer.id) {
+    //             return this.setState({
+    //                 optionD: !this.state.optionD,
+    //                 optionB: false,
+    //                 optionC: false,
+    //                 optionA: false
+    //             })
+    //         }
+    //     })
+    // };
 
     handleButtonClick = (e) => {
         switch (e.target.id) {
@@ -105,17 +206,17 @@ class Play extends Component {
                 this.handleNextButtonClick();
                 break;
 
-            case 'previous-button':
-                this.handlePreviousButtonClick();
-                break;
-
+            // case 'previous-button':
+            //     this.handlePreviousButtonClick();
+            //     break;
             case 'quit-button':
-                this.handleQuitButtonClick();
-                break;
+                this.endGame();
+                 break;
 
             default:
                 break;
         }
+        // this.endGame();
         
     };
 
@@ -125,11 +226,10 @@ class Play extends Component {
         this.setState(prevState => ({
             score: prevState.score + 1,
             correctAnswers: prevState.correctAnswers + 1,
-            currentQuestionIndex: prevState.currentQuestionIndex + 1,
             numberOfAnsweredQuestions: prevState.numberOfAnsweredQuestions + 1
         }), () => {            
             if (this.state.nextQuestion === undefined) {
-                this.endGame();
+                // this.endGame();
             } else {
                 this.displayQuestions(this.state.questions, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
             }
@@ -139,11 +239,10 @@ class Play extends Component {
     wrongAnswer = () => {
         this.setState(prevState => ({
             wrongAnswers: prevState.wrongAnswers + 1,
-            currentQuestionIndex: prevState.currentQuestionIndex + 1,
             numberOfAnsweredQuestions: prevState.numberOfAnsweredQuestions + 1
         }), () => {
             if (this.state.nextQuestion === undefined) {
-                this.endGame();
+                // this.endGame();
             } else {
                 this.displayQuestions(this.state.questions, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
             }
@@ -156,14 +255,10 @@ class Play extends Component {
         options.forEach(option => {
             option.style.visibility = 'visible';
         });
-
-        this.setState({
-            usedFiftyFifty: false
-        });
     }
 
     startTimer = () => {
-        const countDownTime = Date.now() + 180000;
+        const countDownTime = Date.now() + 900000;
         this.interval = setInterval(() => {
             const now = new Date();
             const distance = countDownTime - now;
@@ -235,13 +330,12 @@ class Play extends Component {
             currentQuestion, 
             currentQuestionIndex, 
             numberOfQuestions,
-            time 
+            time
         } = this.state;
-
+        // console.log(userAnswer);
         return (
             <Fragment>
                 <Helmet><title>Quiz Page</title></Helmet>
-               
                 <div className="questions">
                     <div className="timer-container">
                         <p>
@@ -254,28 +348,35 @@ class Play extends Component {
                             <span  className="mdi mdi-clock-outline mdi-50px"></span></h2>
                         </p>
                     </div>
-                    <h5>{currentQuestion.question}</h5>
-                    <div className="options-container">
-                        <p onClick={this.handleOptionClick} className="option">{currentQuestion.optionA}</p>
-                        <p onClick={this.handleOptionClick} className="option">{currentQuestion.optionB}</p>
-                        <p onClick={this.handleOptionClick} className="option">{currentQuestion.optionC}</p>
-                        <p onClick={this.handleOptionClick} className="option">{currentQuestion.optionD}</p>
-                    </div>
+
+        <fieldset className="options-container">
+            <h5><span>{currentQuestion.id}.{" "}</span>{currentQuestion.question}</h5>
+            <input type="checkbox" id="optionA" value={currentQuestion.optionA} name="group1" onChange={this.handleOptionClick} checked={this.state.optionA}/>
+            <label htmlFor="optionA">{currentQuestion.optionA}</label>
+            <input type="checkbox" id="optionB" value={currentQuestion.optionB} name="group1" onChange={this.handleOptionClick} checked={this.state.optionB}/>
+            <label htmlFor="optionB">{currentQuestion.optionB}</label>
+            <input type="checkbox" id="optionC" value={currentQuestion.optionC} name="group1" onChange={this.handleOptionClick} checked={this.state.optionC}/>
+            <label htmlFor="optionC">{currentQuestion.optionC}</label>
+            <input type="checkbox" id="optionD" value={currentQuestion.optionD} name="group1" onChange={this.handleOptionClick} checked={this.state.optionD}/>
+            <label htmlFor="optionD">{currentQuestion.optionD}</label>
+        </fieldset>
+                    
+                    {/* {questions.map(item => <Question key={item.id} item={item}  handleOptionClick={ this.handleOptionClick} state={this.state}></Question>)} */}
 
                     <div className="button-container">
-                        <button 
+                        {/* <button 
                             className={classnames('', {'disable': this.state.previousButtonDisabled})}
                             id="previous-button" 
                             onClick={this.handleButtonClick}>
-                            Previous
-                        </button>
+                            previous
+                        </button> */}
                         <button 
                             className={classnames('', {'disable': this.state.nextButtonDisabled})}
                             id="next-button" 
                             onClick={this.handleButtonClick}>
-                                Next
+                            Next
                             </button>
-                        <button id="quit-button" onClick={this.handleButtonClick}>Quit</button>
+                            <button id="quit-button" onClick={this.handleButtonClick}>Submit</button>
                     </div>
                 </div>
             </Fragment>
