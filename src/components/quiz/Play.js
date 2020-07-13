@@ -320,9 +320,8 @@ class Play extends Component {
             correctAnswers: state.correctAnswers,
             wrongAnswers: state.wrongAnswers
         };
-        setTimeout(() => {
             this.props.history.push('/quizSummary', playerStats);
-        }, 1000);
+        
     }
 
     render () {

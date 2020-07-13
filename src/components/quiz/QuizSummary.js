@@ -64,7 +64,7 @@ class QuizSummary extends Component {
                         <span className="right">{this.state.correctAnswers}</span> <br />
 
                         <span className="stat left">Number of Wrong Answers: </span>
-                        <span className="right">{this.state.wrongAnswers}</span><br />
+                        <span className="right">{this.state.numberOfQuestions - this.state.correctAnswers}</span><br />
                     </div>
                     <section>
                         <ul>
