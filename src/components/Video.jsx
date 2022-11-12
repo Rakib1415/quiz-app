@@ -2,9 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import classes from "../styles/video.module.css";
 
-const Video = ({ title, id, noq }) => {
+const Video = ({ title, id, noq, key }) => {
   return noq > 0 ? (
-    <Link to={`/quiz/${id}`}>
+    <Link to={`/quiz/${id}`} key={key}>
       <div className={classes.video}>
         <img
           src={`http://img.youtube.com/vi/${id}/maxresdefault.jpg`}
@@ -18,7 +18,7 @@ const Video = ({ title, id, noq }) => {
       </div>
     </Link>
   ) : (
-    <div className={classes.video}>
+    <div className={classes.video} key={key}>
       <img
         src={`http://img.youtube.com/vi/${id}/maxresdefault.jpg`}
         alt={title}

@@ -20,10 +20,10 @@ const reducer = (state, action) => {
       });
       return action.value;
     case "answer":
-      const questions = _.cloneDeep(state);
-      questions[action.questionID].options[action.optionIndex].checked =
+      const copyQuestions = _.cloneDeep(state);
+      copyQuestions[action.questionID].options[action.optionIndex].checked =
         action.value;
-      return questions;
+      return copyQuestions;
 
     default:
       return state;
@@ -78,6 +78,8 @@ const Quiz = () => {
     });
   };
 
+  console.log(qna);
+
   const parcentage =
     questions.length > 0 ? ((currentQuestion + 1) / questions.length) * 100 : 0;
 
@@ -90,6 +92,7 @@ const Quiz = () => {
           <h1>{qna[currentQuestion]?.title}</h1>
           <h4>Question can have multiple answers</h4>
           <Answers
+            input
             options={qna[currentQuestion]?.options}
             handleChange={handleAnwerChange}
           />

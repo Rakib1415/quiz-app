@@ -1,48 +1,41 @@
-import { get, getDatabase, orderByKey, query, ref } from 'firebase/database';
+import { get, getDatabase, orderByKey, query, ref } from "firebase/database";
 import { useEffect, useState } from "react";
 
+export default function useQuestions(videoID) {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [questions, setQuestions] = useState([]);
 
-const useQuestions = (id) =>{
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
-    const [questions, setQuestions] = useState([]);
+  useEffect(() => {
+    async function fetchQuestions() {
+      // database related works
+      const db = getDatabase();
+      const quizRef = ref(db, "quiz/" + videoID + "/questions");
+      const quizQuery = query(quizRef, orderByKey());
 
-
-    useEffect(() => {
-
-        const fetchQuestions = async() => {
-            
-            const db = getDatabase();
-            const quizRef = ref(db, `quiz/${id}/questions`);
-            const quizQuery = query(quizRef, orderByKey());
-            try{
-                setLoading(true);
-                setError(false);
-                const snapshot = await get(quizQuery);
-                setLoading(false);
-                if(snapshot.exists()){
-                    setQuestions((prevQuestion) => {
-                        return [...prevQuestion, ...Object.values(snapshot.val())];
-                    })
-                }
-            }catch(err){
-                console.log(err);
-                setLoading(false);
-                setError(true);
-            }
+      try {
+        setError(false);
+        setLoading(true);
+        // request firebase database
+        const snapshot = await get(quizQuery);
+        setLoading(false);
+        if (snapshot.exists()) {
+            const snapshotQuestions = snapshot.val();
+          setQuestions(snapshotQuestions);
         }
-
-        fetchQuestions();
-
-    }, [id]);
-
-    return {
-        loading,
-        error,
-        questions
+      } catch (err) {
+        console.log(err);
+        setLoading(false);
+        setError(true);
+      }
     }
-    
 
-};
+    fetchQuestions();
+  }, [videoID]);
 
-export default useQuestions;
+  return {
+    loading,
+    error,
+    questions,
+  };
+}
