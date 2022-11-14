@@ -1,7 +1,7 @@
 import { getDatabase, ref, set } from "firebase/database";
 import _ from "lodash";
 import React, { useEffect, useReducer, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import useQuestions from "../../hooks/useQuestions";
 import Answers from "../Answers";
@@ -37,6 +37,8 @@ const Quiz = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const { currentUser } = useAuth();
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const { videoTitle } = state;
 
   useEffect(() => {
     dispatch({
@@ -78,8 +80,6 @@ const Quiz = () => {
     });
   };
 
-  console.log(qna);
-
   const parcentage =
     questions.length > 0 ? ((currentQuestion + 1) / questions.length) * 100 : 0;
 
@@ -102,7 +102,7 @@ const Quiz = () => {
             prev={prevQuestion}
             progress={parcentage}
           />
-          <MiniPlayer />
+          <MiniPlayer id={id} title={videoTitle} />
         </>
       )}
     </>

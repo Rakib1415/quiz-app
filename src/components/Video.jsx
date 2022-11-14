@@ -4,7 +4,7 @@ import classes from "../styles/video.module.css";
 
 const Video = ({ title, id, noq, key }) => {
   return noq > 0 ? (
-    <Link to={`/quiz/${id}`} key={key}>
+    <Link to={`/quiz/${id}`} state={{ videoTitle: title }} key={key}>
       <div className={classes.video}>
         <img
           src={`http://img.youtube.com/vi/${id}/maxresdefault.jpg`}
